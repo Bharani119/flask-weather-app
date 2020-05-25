@@ -62,6 +62,20 @@
                                 </button>
                             </div>
                         </div>
+
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                {% set message_class = 'is-success' %}
+
+                                {% if category == 'error' %}
+                                    {% set message_class = 'is-danger' %}
+                                {% endif %}
+                                <div class="notification {{ message_class }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                        {% endwith %}
+
                     </form>
                 </div>
             </div>
@@ -69,6 +83,14 @@
     </section>
     <section class="section">
         <div class="container">
+            <div class="columns">
+            <div class="column is-offset-2 is-4">
+                <button class="button is-link is-rounded" type="button" onclick="window.location.href='{{ url_for( 'showall') }}';">Show all History</button>
+            </div>
+            <div class="column is-offset-2 is-5">
+                <button class="button is-link is-rounded" type="button" onclick="window.location.href='{{ url_for( 'index_post') }}';">Show Last Search</button>
+        </div>
+    </div>
             <div class="columns">
                 <div class="column is-offset-4 is-4">
                     {% for weather in weather_data %}
@@ -94,7 +116,11 @@
                     {% endfor %}
                 </div>
             </div>
-        </div>
+
+        <!-- div class="column is-offset-0 is-1">
+            <button class="button is-link is-rounded" type="button" onclick="window.location.href='{{ url_for( 'aboutme') }}';">Show One</button>
+        </div> -->
+    </div>
     </section>
     <footer class="footer" style="text-align: center;">
         Hope you have a great weather!
