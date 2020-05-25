@@ -90,7 +90,7 @@ def showall():
 
         r = get_weather_data(city.name)
         print(r)
-        if city.name not in li:
+        if city.name.lower() not in li:
             weather = {
                 'city': city.name,
                 'temperature': r['main']['temp'],
@@ -99,10 +99,31 @@ def showall():
             }
 
             weather_data.append(weather)
-            li.append(city.name)
+            li.append(city.name.lower())
 
     return render_template('weather.html', weather_data=weather_data)
 
+@app.route('/showall', methods=['POST'])
+def showallpost():
+    err_msg = ''
+    new_city = request.form.get('city')
+
+    new_city_data = get_weather_data(new_city)
+
+    if new_city_data['cod'] == 200:
+        new_city_obj = City(name=new_city)
+
+        db.session.add(new_city_obj)
+        db.session.commit()
+    else:
+        err_msg = f'City {new_city} does not exist in the world!'
+
+    if err_msg:
+        flash(err_msg, 'error')
+    else:
+        flash('City added succesfully!')
+
+    return redirect(url_for('showall'))
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)
